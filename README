@@ -1,0 +1,63 @@
+		YATE G.72x IPP codecs
+		---------------------
+
+  The YATE project aims to be a fully featured software PBX.
+
+  This component provides support for G.723 and G.729 codecs based on Intel(R)
+Integrated Performance Primitives for Linux.
+
+
+  To build first configure the components:
+
+./configure [options]
+
+  --with-yate=DIR         use Yate from DIR (if yate-devel is not installed)
+  --with-ipp=DIR          use IPP from DIR (else guesses /opt/intel/ipp/...)
+  --with-ippcore=CORE     use specific core (else links for multiple core types)
+
+  If you have more than one IPP installed in /opt/intel/ipp or if you want to
+use another one you must specify which to check:
+
+./configure --with-ipp=/home/me/whatever/ipp-6.1
+
+
+  Then build and optionally install:
+
+make
+make install   (this may need that you run as root)
+
+  If you choose not to install (perhaps you are running Yate from the build
+directory) you can create symlinks in this manner:
+
+ln -s g723codec.yate ../yate/modules
+ln -s g729codec.yate ../yate/modules
+
+
+  IPP supported cores are:
+
+32-bit
+------
+px - pentium mmx
+a6 - pentium3 sse (removed in IPP 6.0)
+w7 - pentium4 sse2
+t7 - pentium4 prescott sse3
+v8 - core2 ssse3
+p8 - core2 penryn, core i7 nehalem sse4.1
+s8 - atom (separate install in IPP 6)
+
+64-bit
+------
+mx - older amd64 w/o sse3?
+m7 - pentium4 sse3 em64t
+u8 - core2 ssse3
+y8 - core2 penryn, core i7 nehalem sse4.1
+n8 - atom (separate install in IPP 6)
+
+  Itanium is a separate architecture that has no other core types.
+
+  You should specify a core type only if you are sure on which system the codec
+is going to be installed. If a codec instance is created on an unsupported
+system Yate will abort with an "Illegal instruction" message.
+
+  Note that if you create a codec optimized for Atom it won't run on anything
+else as the libraries are separate.

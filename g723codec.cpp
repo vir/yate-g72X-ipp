@@ -68,22 +68,18 @@ class G723Codec : public DataTranslator
 public:
     G723Codec(const char* sFormat, const char* dFormat, bool encoding);
     ~G723Codec();
-#ifndef YATE_G72X_POST_R2745
-    virtual void Consume(const DataBlock& data, unsigned long tStamp);
-#else
     virtual unsigned long Consume(const DataBlock& data, unsigned long tStamp, unsigned long flags);
-#endif
     static int encoderSize;
     static int decoderSize;
     static int coderSizeScratch;
     volatile static int count;
 
 private:
-    int g723_sendrate;
     DataBlock m_data;
 
     G723Decoder_Obj* decoder;
     G723Encoder_Obj* encoder;
+    int g723_sendrate;
     Ipp8s *coderScratchMem;
 
     static int G723FrameLength(int frametype);
@@ -135,20 +131,12 @@ int G723Codec::G723FrameLength(int frametype)
     return 1; /* XXX untransmitted */
 }
 
-#ifndef YATE_G72X_POST_R2745
-void G723Codec::Consume(const DataBlock& data, unsigned long tStamp)
-#else
 unsigned long G723Codec::Consume(const DataBlock& data, unsigned long tStamp, unsigned long flags)
-#endif
 {
     if (!getTransSource())
-#ifndef YATE_G72X_POST_R2745
-        return;
-#else
         return 0;
     if (data.null() && (flags & DataSilent))
         return getTransSource()->Forward(data, tStamp, flags);
-#endif
     ref();
     m_data += data;
     DataBlock outdata;
@@ -192,21 +180,13 @@ unsigned long G723Codec::Consume(const DataBlock& data, unsigned long tStamp, un
     }
     XDebug("G723Codec",DebugAll,"%scoding %d frames of %d input bytes (consumed %d) in %d output bytes",
         encoder ? "en" : "de",frames,m_data.length(),consumed,outdata.length());
-#ifdef YATE_G72X_POST_R2745
     unsigned long len = 0;
-#endif
     if (frames) {
         m_data.cut(-consumed);
-#ifndef YATE_G72X_POST_R2745
-        getTransSource()->Forward(outdata,tStamp);
-#else
         len = getTransSource()->Forward(outdata, tStamp, flags);
-#endif
     }
     deref();
-#ifdef YATE_G72X_POST_R2745
     return len;
-#endif
 }
 
 G723Plugin::G723Plugin()
