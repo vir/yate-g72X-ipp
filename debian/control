@@ -1,0 +1,16 @@
+Source: yate-g72x-ipp
+Section: contrib
+Priority: extra
+Maintainer: Vasily i. Redkin <vir@ctm.ru>
+Build-Depends: debhelper (>= 7.0.50~), intel-ipp-devel-137, yate-dev (>= 3.0.0)
+Standards-Version: 3.8.4
+Homepage: http://yate.hosting.lv/
+#Vcs-Git: git://git.debian.org/collab-maint/yate-g72x.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/yate-g72x.git;a=summary
+
+Package: yate-g72x-ipp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: IPP-based codecs for Yate
+
+
