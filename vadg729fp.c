@@ -26,7 +26,7 @@
 //
 */
 
-#include <ippsr.h>
+//#include <ippsr.h>
 #include <math.h>
 #include "vadg729fp.h"
 

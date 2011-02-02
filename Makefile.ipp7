@@ -1,0 +1,88 @@
+# This makefile requires IPP libs version 7.0 installed. For older libs see build.sh.
+
+# 32-bit
+ARCH=pentium4
+#ipproot=/usr/ipp
+IPPROOT=/opt/intel/composerxe-2011.2.137/ipp
+#IPPLIBS=-lippsc_l -lippsr_l -lipps_l -lippcore
+IPPLIBS=-lippsc_l -lipps_l -lippcore
+IPPLIBDIR=${IPPROOT}/lib/ia32/
+IPPINCLUDE="${IPPROOT}/include/"
+# pentium4 sse2
+IPPCORE=w7
+#ipproot=/opt/intel/ipp/5.3/ia32
+#ippcore=a6 # pentium3 sse
+IPPSTATIC_INCLUDE="-include${IPPROOT}/tools/ia32/staticlib/ipp_${IPPCORE}.h"
+
+## 64-bit
+#cc=x86_64-unknown-linux-gnu-gcc-4.3.2
+#ARCH=-march=nocona
+#ipproot=/opt/intel/ipp/6.0/em64t
+#ipplibs="-lippscmergedem64t -lippsrmergedem64t -lippsmergedem64t -lippcoreem64t"
+#ippcore=m7 # pentium4 sse3 em64t
+#ippstatic_include="-include $ipproot/tools/staticlib/ipp_$ippcore.h"
+#src="$src3" build g723_x64.yate
+#src="$src9" build g729_x64.yate
+#
+# IPP cores are:
+# 32-bit
+# px - pentium mmx
+# a6 - pentium3 sse (removed in IPP 6.0)
+# w7 - pentium4 sse2
+# t7 - pentium4 prescott sse3
+# v8 - core2 ssse3
+# p8 - core2 penryn, core i7 nehalem sse4.1
+# s8 - atom
+# 64-bit
+# mx - older amd64 w/o sse3?
+# m7 - pentium4 sse3 em64t
+# u8 - core2 ssse3
+# y8 - core2 penryn, core i7 nehalem sse4.1
+# n8 - atom
+
+YATEINCLUDE=`yate-config --includes`
+MODINSTALLDIR=`yate-config --modules`
+
+all: g723.yate g729.yate
+
+g723.yate: g723codec.o decg723.o encg723.o owng723.o vadg723.o aux_tbls.o
+	gcc -shared -Xlinker -x -o $@ -L${IPPLIBDIR} ${IPPLIBS} $^
+
+g729.yate: g729codec.o decg729fp.o encg729fp.o owng729fp.o vadg729fp.o
+	gcc -shared -Xlinker -x -o $@ -L${IPPLIBDIR} ${IPPLIBS} $^
+
+.SUFFIXES: .yate
+.PHONY: clean
+
+.c.o:
+	gcc -Wall -c -pipe \
+	-DYATE_G72X_POST_R2745 \
+	${YATEINCLUDE} -I${IPPINCLUDE} ${IPPSTATIC_INCLUDE} \
+	-march=${ARCH} -O3 -fomit-frame-pointer \
+	-fPIC -fno-exceptions \
+	-o $*.o $<
+
+.cpp.o:
+	g++ -Wall -c -pipe \
+	-DYATE_G72X_POST_R2745 \
+	${YATEINCLUDE} -I${IPPINCLUDE} ${IPPSTATIC_INCLUDE} \
+	-march=${ARCH} -O3 -fomit-frame-pointer \
+	-fPIC -fno-check-new -fno-exceptions \
+	-o $*.o $<
+
+clean:
+	-rm -f g723.yate g729.yate *.o
+
+install:
+	install -d ${MODINSTALLDIR}
+	install -m 755 g723.yate $(DESTDIR)${MODINSTALLDIR}
+	install -m 755 g729.yate $(DESTDIR)${MODINSTALLDIR}
+
+.depend:
+	gcc -MM -MG *.c *.cpp >.depend
+
+ifeq (.depend,$(wildcard .depend))
+include .depend
+endif
+
+
