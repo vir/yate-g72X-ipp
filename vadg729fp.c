@@ -26,7 +26,9 @@
 //
 */
 
-//#include <ippsr.h>
+#ifndef IPP_7
+#include <ippsr.h>
+#endif
 #include <math.h>
 #include "vadg729fp.h"
 
@@ -176,7 +178,11 @@ void VoiceActivityDetect_G729_32f(Ipp32f ReflectCoeff, Ipp32f *pLSF, Ipp32f *pAu
     ippsDotProd_32f(pTmp, pTmp, LPC_ORDER, &fSpectralDistortion);
 
     /* compute # zero crossing */
+#ifdef IPP_7
+		ippsZeroCrossing_32f(&pSrc[ZC_START_INDEX], ZC_END_INDEX+1-ZC_START_INDEX, &zeroNum, ippZCR);
+#else
     ippsSignChangeRate_32f(&pSrc[ZC_START_INDEX], ZC_END_INDEX+1-ZC_START_INDEX, &zeroNum);
+#endif
     lNumZeroCrossing = zeroNum/80;
 
     /* Initialize and update min energies */

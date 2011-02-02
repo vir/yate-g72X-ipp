@@ -77,6 +77,7 @@ HAS_IPP="no"
 IPP_DIR=""
 IPP_INC=""
 IPP_LIB=""
+IPP_7="no"
 AC_ARG_WITH(ipp,AC_HELP_STRING([--with-ipp=DIR],[use IPP from DIR]),[ac_cv_use_ipp=$withval],[ac_cv_use_ipp=yes])
 if [[ "x$ac_cv_use_ipp" = "xyes" ]]; then
     ac_cv_use_ipp=`echo /opt/intel/ipp/*/*`
@@ -85,7 +86,16 @@ AC_MSG_CHECKING([for IPP in $ac_cv_use_ipp])
 if [[ -f "$ac_cv_use_ipp/include/ipp.h" -a -d "$ac_cv_use_ipp/lib" ]]; then
     IPP_DIR="$ac_cv_use_ipp"
     IPP_INC="-I$IPP_DIR/include"
+    # Check for new IPP directories layout
     IPP_LIB="-L$IPP_DIR/lib"
+    if [[ -d "$IPP_DIR/lib/ia32" ]]; then
+	IPP_7="yes"
+	IPP_LIB="-L$IPP_DIR/lib/ia32"
+    fi
+    if [[ -d "$IPP_DIR/lib/intel64" ]]; then
+	IPP_7="yes"
+	IPP_LIB="-L$IPP_DIR/lib/intel64"
+    fi
     HAS_IPP="yes"
 fi
 AC_MSG_RESULT([$HAS_IPP])
@@ -105,6 +115,7 @@ case "$IPP_DIR" in
 	IPP_SUFFIX="em64t"
 	;;
 esac
+
 AC_ARG_WITH(ippcore,AC_HELP_STRING([--with-ippcore=CORE],[use static core]),[ac_cv_use_ippcore=$withval],[ac_cv_use_ippcore=])
 if [[ "x$ac_cv_use_ippcore" != "x" ]]; then
 if [[ -f "$IPP_DIR/tools/staticlib/ipp_$ac_cv_use_ippcore.h" ]]; then
@@ -118,6 +129,7 @@ fi
 fi
 AC_SUBST(IPP_CORE)
 AC_SUBST(IPP_MERGED)
+AC_SUBST(IPP_7)
 AC_SUBST(IPP_SUFFIX)
 AC_SUBST(IPP_INC_CORE)
 

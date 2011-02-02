@@ -23,14 +23,19 @@ LIBS := libg723.a libg729.a
 O723 := decg723.o encg723.o owng723.o vadg723.o aux_tbls.o
 O729 := decg729fp.o encg729fp.o owng729fp.o vadg729fp.o
 INCFILES :=
+ifeq (@IPP_7@,yes) # IPP_7
+IPPLIBS  := -lippsc_l -lipps_l -lippcore_l
+CFLAGS := -DIPP_7 $(CFLAGS)
+else # IPP_7
 IPPLIBS  := -lippscmerged@IPP_SUFFIX@ \
 	-lippsrmerged@IPP_SUFFIX@ \
 	-lippsmerged@IPP_SUFFIX@ \
 	-lippcore@IPP_SUFFIX@
-ifeq (@IPP_MERGED@,yes)
+ifeq (@IPP_MERGED@,yes) # IPP_MERGED
 IPPLIBS  := -lippscemerged@IPP_SUFFIX@ -lippsremerged@IPP_SUFFIX@ \
 	-lippsemerged@IPP_SUFFIX@ $(IPPLIBS)
-endif
+endif # IPP_MERGED
+endif # IPP_7
 
 MKDEPS := ./config.status
 CLEANS = $(PROGS) $(LIBS) $(O723) $(O729) core
