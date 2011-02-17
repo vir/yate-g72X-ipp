@@ -20,7 +20,7 @@ configure:
 config: configure-stamp
 configure-stamp: configure
 	dh_testdir
-	./configure --with-ipp=/opt/intel/composerxe-2011.2.137/ipp/
+	./configure --with-ipp=/opt/intel/composerxe-2011.2.137/ipp
 	touch configure-stamp
 
 build: build-stamp
