@@ -170,6 +170,7 @@ unsigned long G729Codec::Consume(const DataBlock& data, unsigned long tStamp, un
 }
 
 G729Plugin::G729Plugin()
+    : Plugin("g729codec")
 {
     Output("Loaded module G.729a - based on Intel IPP");
     const FormatInfo* f = FormatRepository::addFormat("g729",L_FRAME_COMPRESSED,L_FRAME*1000/8);

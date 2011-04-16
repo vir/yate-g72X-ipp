@@ -1,3 +1,9 @@
+yate-g72x-ipp (1.1) UNRELEASED; urgency=low
+
+  * Applied patch from http://yate.null.ro/archive/?action=show_msg&actionargs[]=59&actionargs[]=94
+
+ -- Vasily i. Redkin <vir@ctm.ru>  Sun, 17 Apr 2011 01:48:09 +0400
+
 yate-g72x-ipp (1.0) UNRELEASED; urgency=low
 
   * Initial Release.

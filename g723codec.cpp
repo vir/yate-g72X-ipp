@@ -190,6 +190,7 @@ unsigned long G723Codec::Consume(const DataBlock& data, unsigned long tStamp, un
 }
 
 G723Plugin::G723Plugin()
+    : Plugin("g723codec")
 {
     Output("Loaded module G.723.1 - based on Intel IPP");
     const FormatInfo* f = FormatRepository::addFormat("g723",L_FRAME_COMPRESSED,L_FRAME*1000/8);
