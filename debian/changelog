@@ -1,3 +1,9 @@
+yate-g72x-ipp (1.2) UNRELEASED; urgency=medium
+
+  * Fixed build
+
+ -- Vasily i. Redkin <vir@ctm.ru>  Tue, 13 Oct 2015 13:09:57 +0300
+
 yate-g72x-ipp (1.1) UNRELEASED; urgency=low
 
   * Applied patch from http://yate.null.ro/archive/?action=show_msg&actionargs[]=59&actionargs[]=94
